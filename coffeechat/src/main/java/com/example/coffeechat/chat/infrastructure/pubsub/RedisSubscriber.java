@@ -28,14 +28,16 @@ public class RedisSubscriber implements MessageListener {
             if (receivedMessage.contains("chatroomId")) {
                 ChatMessage chatMessage = objectMapper
                         .readValue(receivedMessage, ChatMessage.class);
-                String destination = "/sub/chatroom/" + chatMessage.getChatroomId();
+                String destination = "/topic/chatroom/" + chatMessage.getChatroomId();
+
                 messagingTemplate.convertAndSend(destination, chatMessage);
                 log.info("✅ 채팅 메시지 전송: {} → {}", destination, receivedMessage);
             }
             else if (receivedMessage.contains("status")) {
                 UserStatusResponse statusResponse = objectMapper
                         .readValue(receivedMessage, UserStatusResponse.class);
-                String destination = "/sub/user/status";
+                String destination = "/topic/user/status";
+
                 messagingTemplate.convertAndSend(destination, statusResponse);
                 log.info("✅ 사용자 상태 전송: {} → {}", destination, receivedMessage);
             }
