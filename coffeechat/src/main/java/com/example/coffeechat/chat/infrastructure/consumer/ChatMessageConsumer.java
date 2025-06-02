@@ -16,7 +16,7 @@ public class ChatMessageConsumer {
     private final ChatMessageRepository chatMessageRepository;
     private final SimpMessagingTemplate messagingTemplate;
 
-    @RabbitListener(queues = "${chat.rabbitmq.queue}")
+    @RabbitListener(queues = "${queue.chat}")
     public void receiveMessage(ChatMessage message) {
         log.info("🟢 Received ChatMessage with RMQ: {}", message);
 

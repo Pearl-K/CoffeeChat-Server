@@ -37,3 +37,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+queue:
+  chat: chat.queue
