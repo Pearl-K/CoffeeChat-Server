@@ -1,5 +1,6 @@
 package com.example.coffeechat.chat.presentation;
 
+import com.example.coffeechat.chat.application.ChatMessageProducer;
 import com.example.coffeechat.chat.domain.entity.ChatMessage;
 import com.example.coffeechat.chat.infrastructure.pubsub.RedisPublisher;
 import com.example.coffeechat.user.application.UserStatusService;
@@ -15,20 +16,22 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class ChatWebSocketController {
 
+    private final ChatMessageProducer chatMessageProducer;
     private final RedisPublisher redisPublisher;
     private final UserStatusService userStatusService;
 
     @MessageMapping("/chat/sendMessage")
-    public void sendMessage(@Payload ChatMessage message) {
-        if (message.getChatroomId() == null) {
-            log.error("🚨 chatRoomId is NULL!");
-        }
-        redisPublisher.publishMessage(message);
-        log.info("WebSocket Message sent: {}", message);
+    public void sendMessage(
+            @Payload ChatMessage message
+    ) {
+        chatMessageProducer.send(message);
+        log.info("Sent message via MQ: {}", message);
     }
 
     @MessageMapping("/user/ping")
-    public void handlePing(@Payload UserStatusResponse response) {
+    public void handlePing(
+            @Payload UserStatusResponse response
+    ) {
         redisPublisher.publishUserStatus(response.userId(), response.status());
         userStatusService.updateOnlineStatus(response.userId());
     }

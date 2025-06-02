@@ -25,6 +25,10 @@ spring:
     port: 5672
     username: ${RABBITMQ_DEFAULT_USER}
     password: ${RABBITMQ_DEFAULT_PASS}
+    exchange:
+      chat: chat.exchange
+    routing-key:
+      chat: chat.routingKey
 
   jpa:
     hibernate:
