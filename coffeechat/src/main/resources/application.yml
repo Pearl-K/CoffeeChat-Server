@@ -28,7 +28,9 @@ spring:
     exchange:
       chat: chat.exchange
     routing-key:
-      chat: chat.routingKey
+      message: chat.message.send   # routing key for message sending
+    queue:
+      chat: chat.queue
 
   jpa:
     hibernate:
@@ -37,6 +39,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-queue:
-  chat: chat.queue
