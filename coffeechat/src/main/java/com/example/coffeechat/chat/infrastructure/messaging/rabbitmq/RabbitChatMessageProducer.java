@@ -16,7 +16,7 @@ public class RabbitChatMessageProducer implements ChatMessageProducer {
     @Value("${spring.rabbitmq.exchange.chat}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routing-key.chat}")
+    @Value("${spring.rabbitmq.routing-key.message}")
     private String routingKey;
 
     @Override

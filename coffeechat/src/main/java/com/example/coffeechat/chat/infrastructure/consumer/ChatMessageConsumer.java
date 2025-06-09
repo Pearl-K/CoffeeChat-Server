@@ -19,7 +19,7 @@ public class ChatMessageConsumer {
 
     @RabbitListener(queues = "${spring.rabbitmq.queue.chat}")
     public void receiveMessage(ChatMessage message) {
-        log.info("Received ChatMessage with RMQ: {}", message);
+        log.info("\uD83D\uDCE9 Received ChatMessage with RMQ: {}", message.toString());
         chatMessageRepository.save(message);
         String destination = PATH_PREFIX + message.getChatroomId();
 
