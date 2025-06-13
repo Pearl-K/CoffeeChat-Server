@@ -18,12 +18,29 @@ public class RabbitConfig {
     @Value("${spring.rabbitmq.routing-key.message}")
     private String messageRoutingKey;
 
+    @Value("${spring.rabbitmq.exchange.dlx}")
+    private String dlxExchangeName;
+
+    @Value("${spring.rabbitmq.routing-key.dlq}")
+    private String dlqRoutingKey;
+
     @Value("${spring.rabbitmq.queue.chat}")
-    private String queueName;
+    private String chatQueueName;
+
+    @Value("${spring.rabbitmq.queue.dlq}")
+    private String chatDlqQueueName;
 
     @Bean
     public Queue chatQueue() {
-        return new Queue(queueName, true);
+        return QueueBuilder.durable(chatQueueName)
+                .withArgument("x-dead-letter-exchange", dlxExchangeName)
+                .withArgument("x-dead-letter-routing-key", dlqRoutingKey)
+                .build();
+    }
+
+    @Bean
+    public Queue chatDlqQueue() {
+        return QueueBuilder.durable(chatDlqQueueName).build();
     }
 
     @Bean
@@ -32,10 +49,22 @@ public class RabbitConfig {
     }
 
     @Bean
+    public DirectExchange chatDlxExchange() {
+        return new DirectExchange(dlxExchangeName);
+    }
+
+    @Bean
     public Binding chatBinding() {
         return BindingBuilder.bind(chatQueue())
                 .to(chatExchange())
                 .with(messageRoutingKey);
+    }
+
+    @Bean
+    public Binding chatDlqBinding() {
+        return BindingBuilder.bind(chatDlqQueue())
+                .to(chatDlxExchange())
+                .with(dlqRoutingKey);
     }
 
     @Bean
