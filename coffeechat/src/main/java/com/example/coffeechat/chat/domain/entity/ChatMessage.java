@@ -55,7 +55,6 @@ public class ChatMessage {
         this.senderId = senderId;
         this.senderName = senderName;
         this.message = message;
-        this.timestamp = LocalDateTime.now();
     }
 }
 

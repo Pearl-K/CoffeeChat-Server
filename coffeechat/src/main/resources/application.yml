@@ -27,8 +27,22 @@ spring:
     password: ${RABBITMQ_DEFAULT_PASS}
     exchange:
       chat: chat.exchange
+      dlx: chat.dlx.exchange
     routing-key:
-      chat: chat.routingKey
+      message: chat.message.send
+      dlq: chat.dlq
+    queue:
+      chat: chat.queue
+      dlq: chat.queue.dlq
+    listener:
+      simple:
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          max-attempts: 2
+          initial-interval: 500
+          multiplier: 1.0
+          max-interval: 1000
 
   jpa:
     hibernate:
@@ -37,6 +51,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-queue:
-  chat: chat.queue

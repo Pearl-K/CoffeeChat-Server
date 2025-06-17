@@ -15,16 +15,13 @@ public class ChatMessageConsumer {
 
     private final ChatMessageRepository chatMessageRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private static final String PATH_PREFIX = "/topic/chatroom/";
 
-    @RabbitListener(queues = "${queue.chat}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.chat}")
     public void receiveMessage(ChatMessage message) {
-        log.info("🟢 Received ChatMessage with RMQ: {}", message);
+        log.info("\uD83D\uDCE9 Received ChatMessage with RMQ: {}", message.toString());
 
-        // TODO: 추후 비동기 처리 등, 확장 전략 구현
         chatMessageRepository.save(message);
-
-        String destination = "/topic/chatroom/" + message.getChatroomId();
-        messagingTemplate.convertAndSend(destination, message);
+        messagingTemplate.convertAndSend(PATH_PREFIX + message.getChatroomId(), message);
     }
 }
-

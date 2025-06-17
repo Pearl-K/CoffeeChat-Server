@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket STOMP Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let stompClient;
+        let subscriptions = {};
+
+        function connectWebSocket() {
+            const url = $('#websocketUrl').val();
+            stompClient = StompJs.Stomp.over(() => new SockJS(url));
+            stompClient.connect({}, stompConnectHandler, stompErrorHandler);
+        }
+
+        function stompConnectHandler() {
+            console.log('✅ WebSocket 연결 성공');
+        }
+
+        function stompErrorHandler(error) {
+            console.error('❌ WebSocket 연결 실패', error);
+        }
+
+        function subscribeToPath(path) {
+            const subscription = stompClient.subscribe(path, (data) => {
+                displayMessage(data.body);
+            });
+            subscriptions[path] = subscription;
+        }
+
+        function unsubscribeFromPath(path) {
+            if (subscriptions[path]) {
+                subscriptions[path].unsubscribe();
+                delete subscriptions[path];
+                console.log(`❎ ${path} 구독 해제됨`);
+            }
+        }
+
+        function displayMessage(message) {
+            const box = $('#messageBox');
+            box.append(`<div class="bg-blue-100 text-blue-900 px-4 py-2 rounded my-1">${message}</div>`);
+            box.scrollTop(box[0].scrollHeight);
+        }
+
+        $(function () {
+            $('#connectBtn').click(connectWebSocket);
+
+            $('#addSubscriptionBtn').click(function () {
+                const count = $('.subscription-form').length;
+                const form = `
+          <div class="flex gap-2 items-center subscription-form mb-2">
+            <input type="text" id="path-${count}" class="border rounded px-2 py-1 flex-1" placeholder="/topic/chatroom/1" />
+            <button class="subscribeBtn bg-green-500 text-white px-3 py-1 rounded">SUB</button>
+            <button class="unsubscribeBtn bg-red-500 text-white px-3 py-1 rounded hidden">UNSUB</button>
+          </div>`;
+                $('#subscriptionList').append(form);
+            });
+
+            $(document).on('click', '.subscribeBtn', function () {
+                const input = $(this).siblings('input');
+                const path = input.val();
+                subscribeToPath(path);
+                input.prop('disabled', true);
+                $(this).hide();
+                $(this).siblings('.unsubscribeBtn').show();
+            });
+
+            $(document).on('click', '.unsubscribeBtn', function () {
+                const input = $(this).siblings('input');
+                const path = input.val();
+                unsubscribeFromPath(path);
+                input.prop('disabled', false);
+                $(this).hide();
+                $(this).siblings('.subscribeBtn').show();
+            });
+
+            $('#sendBtn').click(function () {
+                const path = $('#destinationPath').val();
+                const message = $('#message').val();
+                try {
+                    const json = JSON.parse(message);
+                    stompClient.send(path, {}, JSON.stringify(json));
+                } catch (e) {
+                    alert('🚫 JSON 형식 오류!');
+                }
+            });
+        });
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 p-8">
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">💬 WebSocket STOMP 테스트 클라이언트</h1>
+
+    <div class="mb-4">
+        <label class="block text-sm font-medium mb-1">🔗 WebSocket URL</label>
+        <div class="flex gap-2">
+            <input id="websocketUrl" type="text" class="flex-1 border rounded px-3 py-2" placeholder="http://localhost:8080/ws" />
+            <button id="connectBtn" class="bg-blue-500 text-white px-4 py-2 rounded">CONNECT</button>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <h2 class="text-lg font-semibold">📥 SUBSCRIBE</h2>
+        <div id="subscriptionList" class="my-2"></div>
+        <button id="addSubscriptionBtn" class="bg-gray-600 text-white px-4 py-2 rounded">+ ADD</button>
+    </div>
+
+    <div class="mb-4">
+        <h2 class="text-lg font-semibold">📤 SEND MESSAGE</h2>
+        <label class="block text-sm font-medium mt-2">경로</label>
+        <label for="destinationPath"></label><input id="destinationPath" type="text" class="w-full border rounded px-3 py-2 mb-2" placeholder="/topic/chat/sendMessage" />
+        <label class="block text-sm font-medium">JSON 메시지</label>
+        <label for="message"></label><textarea id="message" class="w-full border rounded px-3 py-2" rows="4" placeholder='{"chatroomId":1, "senderId":100, "senderName":"진주", "message":"Hello!"}'></textarea>
+        <button id="sendBtn" class="mt-2 bg-purple-600 text-white px-4 py-2 rounded">SEND</button>
+    </div>
+
+    <div>
+        <h2 class="text-lg font-semibold">📨 RECEIVED MESSAGES</h2>
+        <div id="messageBox" class="mt-2 p-3 bg-white border rounded h-48 overflow-y-scroll"></div>
+    </div>
+</div>
+</body>
+</html>

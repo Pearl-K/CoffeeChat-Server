@@ -25,7 +25,7 @@ public class ChatWebSocketController {
             @Payload ChatMessage message
     ) {
         chatMessageProducer.send(message);
-        log.info("Sent message via MQ: {}", message);
+        log.info("\uD83D\uDCE8 Sent message via MQ: {}", message.toString());
     }
 
     @MessageMapping("/user/ping")
