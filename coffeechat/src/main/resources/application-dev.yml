@@ -2,26 +2,23 @@ spring:
   application:
     name: coffeechat
 
-  profiles:
-    active: local
-
   datasource:
-    url: jdbc:mysql://localhost:3307/${MYSQL_DATABASE}
+    url: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
     mongodb:
-      uri: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@localhost:27017/${MONGO_INITDB_DATABASE}
+      uri: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/${MONGO_INITDB_DATABASE}
       authentication-database: admin
     redis:
-      host: localhost
+      host: redis
       port: 6379
       password: ${REDIS_PASSWORD}
 
   rabbitmq:
-    host: localhost
+    host: rabbitmq
     port: 5672
     username: ${RABBITMQ_DEFAULT_USER}
     password: ${RABBITMQ_DEFAULT_PASS}
@@ -51,3 +48,16 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    prometheus:
+      enabled: true

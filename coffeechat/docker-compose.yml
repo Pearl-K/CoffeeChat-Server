@@ -1,9 +1,26 @@
 version: '3.8'
 
 services:
+  chat-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chat-server
+    ports:
+      - "8080:8080"
+    networks:
+      - chat-net
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+
   mysql:
     image: mysql:8.0
     container_name: chat-mysql
+    env_file:
+      - .env
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -15,10 +32,17 @@ services:
       - chat-net
     volumes:
       - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongodb:
     image: mongo:6.0
     container_name: chat-mongo
+    env_file:
+      - .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -37,11 +61,15 @@ services:
       - "6379:6379"
     networks:
       - chat-net
+    env_file:
+      - .env
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: chat-rabbitmq
+    env_file:
+      - .env
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
@@ -53,10 +81,28 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
 
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - chat-net
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - chat-net
+
+
 volumes:
   mysql-data:
   mongo-data:
   rabbitmq-data:
+  grafana-data:
 
 networks:
   chat-net:
