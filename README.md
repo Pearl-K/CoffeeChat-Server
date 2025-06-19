@@ -4,6 +4,18 @@
 - 서비스가 제공하는 **핵심 가치** 중 하나는, 실시간 온라인 커피챗을 기술적으로 원활히 제공하는 것입니다.
 
 
+<table>
+  <tr>
+    <td><img src="/img/1-main.png" width="200"/></td>
+    <td><img src="/img/2-session-mypage.png" width="200"/></td>
+  </tr>
+  <tr>
+    <td><img src="/img/3-coffeechat-post.png" width="200"/></td>
+    <td><img src="/img/4-coffechat-room.png" width="200"/></td>
+  </tr>
+</table>
+
+
 ## Overview & My Role
 - 이 레포지토리는 CoffeeChat Service의 서버 중 **실시간 채팅** 파트를 분리하여 재구성한 서버입니다.
 - 저는 이 프로젝트에서 아래와 같은 도메인의 설계와 개발을 담당했습니다.
