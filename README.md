@@ -6,12 +6,12 @@
 
 <table>
   <tr>
-    <td><img src="/img/1-main.png" width="200"/></td>
-    <td><img src="/img/2-session-mypage.png" width="200"/></td>
+    <td><img src="/img/1-main.png" width="500"/></td>
+    <td><img src="/img/2-session-mypage.png" width="500"/></td>
   </tr>
   <tr>
-    <td><img src="/img/3-coffeechat-post.png" width="200"/></td>
-    <td><img src="/img/4-coffechat-room.png" width="200"/></td>
+    <td><img src="/img/3-coffeechat-post.png" width="500"/></td>
+    <td><img src="/img/4-coffechat-room.png" width="500"/></td>
   </tr>
 </table>
 
