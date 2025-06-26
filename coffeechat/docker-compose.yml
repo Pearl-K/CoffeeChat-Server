@@ -7,13 +7,17 @@ services:
     container_name: chat-server
     ports:
       - "8080:8080"
+      - "9999:9999"
     networks:
       - chat-net
     env_file:
       - .env
     environment:
       SPRING_PROFILES_ACTIVE: dev
-      JAVA_OPTS: "-Xmx512m -Xms256m"
+      JAVA_OPTS: "-Xmx512m -Xms512m"
+    volumes:
+      - ./logs:/logs
+      - ./dumps:/dumps
     depends_on:
       mysql:
         condition: service_healthy
