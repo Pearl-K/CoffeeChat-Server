@@ -53,11 +53,19 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
-  metrics:
-    export:
-      prometheus:
-        enabled: true
+        include: health,info,prometheus,metrics
+      base-path: /actuator
   endpoint:
-    prometheus:
+    health:
+      show-details: always
+  metrics:
+    jvm:
       enabled: true
+    system:
+      enabled: true
+    web:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
