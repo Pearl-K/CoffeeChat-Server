@@ -13,7 +13,7 @@ export let options = {
     // duration: '5m',
 };
 
-const WS_URL    = 'ws://localhost:8080/coffee-chat-ws';
+const WS_URL    = 'ws://localhost:8080/ws';
 const SUB_PREFIX = '/topic/chatroom/';
 const SEND_DEST  = '/app/chat/sendMessage';
 
