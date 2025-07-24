@@ -29,10 +29,10 @@ spring:
       message: chat.message.send
       dlq: chat.dlq
     queue:
-      chat: chat.queue
       dlq: chat.queue.dlq
     listener:
       simple:
+        concurrency: 3
         acknowledge-mode: auto
         retry:
           enabled: true
