@@ -61,7 +61,7 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(redisSubscriber, userStatusTopic());
-        log.info("✅ RedisMessageListenerContainer 실행 및 구독 시작");
+        log.info("RedisMessageListenerContainer 실행 및 구독 시작");
         return container;
     }
 

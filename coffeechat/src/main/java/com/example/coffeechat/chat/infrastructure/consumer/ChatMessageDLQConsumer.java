@@ -15,6 +15,6 @@ public class ChatMessageDLQConsumer {
     public void handleFailedMessage(ChatMessage failedMessage) {
         log.warn("[DLQ] Failed to handle chat message: {}", failedMessage);
 
-        // TODO: 운영에 맞는 처리 방식 구현 (따로 저장 or 로그 처리)
+        // TODO: DLQ 전략 구현
     }
 }

@@ -17,9 +17,13 @@ public class ChatMessageConsumer {
     private final SimpMessagingTemplate messagingTemplate;
     private static final String PATH_PREFIX = "/topic/chatroom/";
 
-    @RabbitListener(queues = "${spring.rabbitmq.queue.chat}")
+    @RabbitListener(queues = {
+            "chat.queue.0",
+            "chat.queue.1",
+            "chat.queue.2"
+    })
     public void receiveMessage(ChatMessage message) {
-        log.info("\uD83D\uDCE9 Received ChatMessage with RMQ: {}", message.toString());
+        log.info("Received ChatMessage with RMQ: {}", message.toString());
 
         chatMessageRepository.save(message);
         messagingTemplate.convertAndSend(PATH_PREFIX + message.getChatroomId(), message);
