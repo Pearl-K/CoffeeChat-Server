@@ -2,7 +2,6 @@ package com.example.coffeechat.chat.domain.entity;
 
 import com.example.coffeechat.chat.domain.MessageStatus;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,6 +29,8 @@ public class ChatMessage {
     private String message;
 
     private MessageStatus status;
+
+    private int retryCount = 0;
 
     @CreatedDate
     private LocalDateTime timestamp;
