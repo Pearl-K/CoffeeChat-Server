@@ -1,10 +1,12 @@
 package com.example.coffeechat.chat.domain.entity;
 
-import jakarta.persistence.Id;
+import com.example.coffeechat.chat.domain.MessageStatus;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,8 +15,7 @@ import java.time.LocalDateTime;
 @Getter
 @Document(collection = "chat_messages")
 @CompoundIndex(name = "chatroom_timestamp_idx", def = "{'chatroomId': 1, 'timestamp': -1}")
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMessage {
 
     @Id
@@ -27,6 +28,8 @@ public class ChatMessage {
     private String senderName;
 
     private String message;
+
+    private MessageStatus status;
 
     @CreatedDate
     private LocalDateTime timestamp;
@@ -55,6 +58,23 @@ public class ChatMessage {
         this.senderId = senderId;
         this.senderName = senderName;
         this.message = message;
+        this.status = MessageStatus.PENDING;
+    }
+
+    public void markSent() {
+        this.status = MessageStatus.SENT;
+    }
+
+    public void markReceived() {
+        this.status = MessageStatus.RECEIVED;
+    }
+
+    public void markFailed() {
+        this.status = MessageStatus.FAILED;
+    }
+
+    public void markRetrying() {
+        this.status = MessageStatus.RETRYING;
     }
 }
 
